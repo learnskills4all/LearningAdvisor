@@ -1,0 +1,85 @@
+/**
+ * define main container containing 
+ * a margin, minimum height,
+ * the way it is displayed,
+ * and a flex-direction 
+ */
+.main_container {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+/**
+* define css for body that contains
+* e.g. alignments, border radiusses (to make
+* pagecards having a round-shaped border at the four corners),
+* padding etc.
+* the same will hold for the body_footer 
+*/
+.body {
+  width: 96%;
+  margin: 0px auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-content: flex-start;
+  flex-wrap: wrap;
+  padding: 4vh;
+  margin-top: -80px;
+  margin-bottom: 1%;
+  min-height: 82vh;
+  flex-grow: 1;
+  border-radius: 20px;
+  row-gap: 15px;
+}
+/**
+* define css for the footer of the body that contains 
+* e.g. the color of shadow, margins, the way that certain content is justified,
+* (e.g. in the middle) 
+*/
+.body_footer {
+  width: 96%;
+  margin: 0px auto;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  align-content: flex-start;
+  flex-wrap: wrap;
+  padding: 4vh;
+  flex-grow: 1;
+  margin-top: -80px;
+  border-radius: 20px;
+  border-bottom-left-radius: 0px;
+  border-bottom-right-radius: 0px;
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+  row-gap: 30px;
+}
+.header {
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 20px;
+}
+.header h1 {
+  font-size: 400px;
+}
+a:not(.buttonLink) {
+  display: inline-flex;
+  width: inherit;
+  text-decoration: none;
+}
+.inverse_icon {
+  border-radius: 5px;
+  padding: 2px;
+  margin: 5px;
+}
+.buttonLink {
+  text-decoration: none;
+}
+/**
+* important css properties that make sure that 
+* the widths of components match
+* in every page
+*/
+.widthInherited {
+  width: inherit !important;
+}

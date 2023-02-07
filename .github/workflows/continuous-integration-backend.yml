@@ -1,0 +1,28 @@
+name: Automated testing of code quality/correctness/style (backend)
+
+on:
+  pull_request:
+    branches: [master]
+  workflow_dispatch:
+
+jobs:
+  running-checks:
+    runs-on: self-hosted
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: npm install, build, and test
+        working-directory: ./advisor-backend
+        run: |
+          npm install
+          npm run build --if-present
+          npm run test --if-present
+
+      - name: test code quality (ESLint)
+        working-directory: ./advisor-backend
+        run: npm run lint
+
+      - name: stylize code (Prettier)
+        working-directory: ./advisor-backend
+        run: npm run prettier-check

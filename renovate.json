@@ -1,0 +1,18 @@
+{
+	"schedule": [
+		"every weekend"
+	],
+	"enabledManagers": ["npm"],
+	"assigneesFromCodeOwners": true,
+	"packageRules": [{
+		"groupName": "All Frontend dependencies",
+		"groupSlug": "frontend",
+		"matchUpdateTypes": ["major", "minor", "patch"],
+		"matchPaths": ["advisor-frontend/package.json"]
+	}, {
+		"groupName": "All Backend dependencies",
+		"groupSlug": "backend",
+		"matchUpdateTypes": ["major", "minor", "patch"],
+		"matchPaths": ["advisor-backend/package.json"]
+	}]
+}

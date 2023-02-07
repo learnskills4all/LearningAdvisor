@@ -1,0 +1,9 @@
+/**
+* Define css for the texts of the subarea component / card
+* which has text-alignment position of "left"
+* with a top-margin of 10 pixels 
+*/
+.subareaText {
+    text-align: left;
+    margin-top: 10px;
+}

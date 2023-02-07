@@ -1,0 +1,52 @@
+name: Coverage report upload
+
+on:
+  push:
+    branches:
+    - master
+  pull_request:
+    branches:
+    - master
+
+jobs:
+  build:
+    runs-on: self-hosted
+    name: Generate and upload coverage report
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Node.js version
+        uses: actions/setup-node@v1
+        with:
+          node-version: "16.x"
+          
+      - name: Frontend - npm install and coveralls
+        working-directory: advisor-frontend
+        run: |
+          npm install
+          npm run coverage
+
+      - name: Backend - npm install and coveralls
+        working-directory: advisor-backend
+        run: |
+          npm install
+          npm run test:cov
+          
+      - name: Backend - Upload coverage reports to Coveralls
+        uses: coverallsapp/github-action@master
+        env:
+          NODE_COVERALLS_DEBUG: 1
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          flag-name: backend
+          path-to-lcov: ${{ github.workspace }}/advisor-backend/coverage/lcov.info
+          base-path: advisor-backend
+
+      - name: Frontend - Upload coverage reports to Codecov
+        uses: coverallsapp/github-action@master
+        env:
+          NODE_COVERALLS_DEBUG: 1
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          flag-name: frontend
+          path-to-lcov: ${{ github.workspace }}/advisor-frontend/coverage/lcov.info
+          base-path: advisor-frontend

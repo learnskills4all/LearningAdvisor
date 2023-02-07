@@ -1,0 +1,2313 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "These are API specifications for TestING Advisor.",
+    "version": "1.0.0",
+    "title": "TestING Advisor",
+    "termsOfService": "",
+    "contact": {
+      "email": "p.r.vlaswinkel@student.tue.nl"
+    },
+    "license": {
+      "name": "Apache 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    }
+  },
+  "host": "tabackend.azurewebsites.net",
+  "basePath": "/",
+  "tags": [
+    {
+      "name": "TestING Advisor",
+      "description": "A SEP project for ING.",
+      "externalDocs": {
+        "description": "Base URL",
+        "url": "https://tabackend.azurewebsites.net/"
+      }
+    },
+    {
+      "name": "auth",
+      "description": "Authentication"
+    },
+    {
+      "name": "user",
+      "description": "Operations about user"
+    },
+    {
+      "name": "team",
+      "description": "Operations about teams"
+    },
+    {
+      "name": "checkpoint",
+      "description": "Operations about checkpoints"
+    },
+    {
+      "name": "maturity",
+      "description": "Operations about maturities"
+    },
+    {
+      "name": "subarea",
+      "description": "Operations about subareas"
+    },
+    {
+      "name": "template",
+      "description": "Operations about templates"
+    },
+    {
+      "name": "category",
+      "description": "Operations about categories"
+    },
+    {
+      "name": "answer",
+      "description": "Operations about possible answers"
+    }
+  ],
+  "schemes": [
+    "https",
+    "http"
+  ],
+  "paths": {
+    "/auth/login": {
+      "post": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Login to the website",
+        "description": "",
+        "operationId": "login",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Login data of user",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Login"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "405": {
+            "description": "Invalid input"
+          }
+        }
+      }
+    },
+    "/auth/signup": {
+      "post": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Signup to the website",
+        "description": "",
+        "operationId": "signup",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/CreatedUser"
+            }
+          }
+        }
+      }
+    },
+    "/auth/logout": {
+      "delete": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Logout of the website",
+        "description": "",
+        "operationId": "logout",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation"
+          }
+        }
+      }
+    },
+    "/user/": {
+      "get": {
+        "tags": [
+          "user"
+        ],
+        "summary": "Get all users",
+        "description": "This can only be done by an assessor or admin",
+        "operationId": "getAllUsers",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/User"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "testingadvisor_auth": []
+          }
+        ]
+      }
+    },
+    "/user/{user_id}": {
+      "get": {
+        "tags": [
+          "user"
+        ],
+        "summary": "Get user by user id", 
+        "description": "This can only be done by an assessor or admin",
+        "operationId": "getUserById",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "user_id": "user_id",
+            "in": "path",
+            "description": "The name that needs to be fetched.",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          },
+          "400": {
+            "description": "Invalid username supplied"
+          },
+          "404": {
+            "description": "User not found"
+          }
+        },
+        "security": [
+          {
+            "testingadvisor_auth": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "user"
+        ],
+        "summary": "Delete user",
+        "description": "This can only be done by admins.",
+        "operationId": "deleteUser",
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "username",
+            "in": "path",
+            "description": "The name that needs to be deleted",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Invalid username supplied"
+          },
+          "404": {
+            "description": "User not found"
+          }
+        },
+        "security": [
+          {
+            "testingadvisor_auth": []
+          }
+        ]
+      }
+    },
+    "/user/progress": {
+      "get": {
+        "tags": [
+          "user"
+        ],
+        "summary": "Get user progress by ID (logged in user if no ID specified)",
+        "description": "Only allowed by admin",
+        "operationId": "getProgressById",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "query",
+            "description": "The userid of the user to get progress for",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "User Progress",
+            "schema": {
+              "$ref": "#/definitions/UserProgress"
+            }
+          }
+        },
+        "security": [
+          {
+            "testingadvisor_auth": []
+          }
+        ]
+      }
+    },
+    "/user/notifications": {
+      "get": {
+        "tags": [
+          "user"
+        ],
+        "summary": "Get notifications of logged in user",
+        "description": "",
+        "operationId": "getNotifications",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "default": {
+            "description": "Array of notifications",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Notifications"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "testingadvisor_auth": []
+          }
+        ]
+      }
+    },
+    "/teams/my": {
+      "get": {
+        "tags": [
+          "team"
+        ],
+        "summary": "Get a list of teams of logged in user",
+        "description": "",
+        "operationId": "getTeams",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "List of teams",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/UserTeam"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/teams/create": {
+      "post": {
+        "tags": [
+          "team"
+        ],
+        "summary": "Create team",
+        "description": "This can only be done by an assessor or admin",
+        "operationId": "createTeam",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Created team object",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/TeamDTO"
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/Team"
+            }
+          }
+        },
+        "security": [
+          {
+            "testingadvisor_auth": []
+          }
+        ]
+      }
+    },
+    "/teams/{team_id}": {
+      "get": {
+        "tags": [
+          "team"
+        ],
+        "summary": "Get team by id",
+        "description": "",
+        "operationId": "getTeamById",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "team_id",
+            "in": "path",
+            "description": "The team id that needs to be fetched.",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/Team"
+            }
+          },
+          "404": {
+            "description": "Team not found"
+          }
+        },
+        "security": [
+          {
+            "testingadvisor_auth": []
+          }
+        ]
+      }
+    },
+    "/teams/{team_id}/assessments": {
+      "get": {
+        "tags": [
+          "team"
+        ],
+        "summary": "Get assessments of team with team_id",
+        "description": "",
+        "operationId": "getTeamAssessments",
+        "parameters": [
+          {
+            "name": "team_id",
+            "in": "path",
+            "description": "The team id to get assessments for",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Assessment"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "testingadvisor_auth": []
+          }
+        ]
+      }
+    },
+    "/teams/{team_id}/members": {
+      "get": {
+        "tags": [
+          "team"
+        ],
+        "summary": "Get members of team",
+        "description": "Only allowed by member of team or admin",
+        "operationId": "getTeamMembers",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "team_id",
+            "in": "path",
+            "description": "The team id of the team.",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/User"
+              }
+            }
+          },
+          "404": {
+            "description": "Team not found"
+          }
+        },
+        "security": [
+          {
+            "testingadvisor_auth": []
+          }
+        ]
+      }
+    },
+    "/teams/join/{invite_token}": {
+      "post": {
+        "tags": [
+          "team"
+        ],
+        "summary": "Join team with invite id",
+        "description": "",
+        "operationId": "JoinTeamByInvite",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "invite_token",
+            "in": "path",
+            "description": "Invite token",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation"
+          },
+          "404": {
+            "description": "Invite token not found"
+          }
+        },
+        "security": [
+          {
+            "testingadvisor_auth": []
+          }
+        ]
+      }
+    },
+    "/category/{category_id}/checkpoint": {
+      "get": {
+        "tags": [
+          "checkpoint"
+        ],
+        "summary": "Get checkpoints in a category",
+        "description": "",
+        "operationId": "getCheckpointsInCategory",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "category_id",
+            "description": "category_id to get checkpoints for",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of checkpoints",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Checkpoint"
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "checkpoint"
+        ],
+        "summary": "Create a checkpoint",
+        "description": "This can only be done by admins",
+        "operationId": "createCheckpoint",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "category_id",
+            "description": "category_id to create checkpoint in",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Checkpoint data",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CheckpointDTO"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/Checkpoint"
+            }
+          },
+          "404": {
+            "description": "Category not found"
+          }
+        },
+        "security": [
+          {
+            "testingadvisor_auth": []
+          }
+        ]
+      }
+    },
+    "/checkpoints/{checkpoint_id}": {
+      "get": {
+        "tags": [
+          "checkpoint"
+        ],
+        "summary": "Get checkpoint by id",
+        "description": "",
+        "operationId": "getCheckpoint",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "checkpoint_id",
+            "in": "path",
+            "description": "checkpoint id to get checkpoint from",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/Checkpoint"
+            }
+          },
+          "400": {
+            "description": "Invalid checkpoint id"
+          },
+          "404": {
+            "description": "Checkpoint not found"
+          }
+        },
+        "security": [
+          {
+            "testingadvisor_auth": []
+          }
+        ]
+      },
+      "patch": {
+        "tags": [
+          "checkpoint"
+        ],
+        "summary": "Update checkpoint by id",
+        "description": "",
+        "operationId": "updateCheckpoint",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "checkpoint_id",
+            "in": "path",
+            "description": "checkpoint id to update",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "name": "checkpoint",
+            "in": "body",
+            "description": "checkpoint information to update",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CheckpointDTO"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Invalid checkpoint id"
+          },
+          "404": {
+            "description": "Checkpoint not found"
+          }
+        },
+        "security": [
+          {
+            "testingadvisor_auth": []
+          }
+        ]
+      }
+    },
+    "/assessment": {
+      "get": {
+        "tags": [
+          "assessment"
+        ],
+        "summary": "Get all assessments",
+        "description": "Only allowed by admins",
+        "operationId": "getAllAssessments",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/Assessment"
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "assessment"
+        ],
+        "summary": "Create a new assessment",
+        "description": "Team assessment only allowed by Assessor (or admin) role",
+        "operationId": "createNewAssessment",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Settings for new assessment",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/AssessmentDto"
+            }
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Assessment"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "testingadvisor_auth": []
+          }
+        ]
+      }
+    },
+    "/assessment/{assessment_id}": {
+      "get": {
+        "tags": [
+          "assessment"
+        ],
+        "summary": "Get assessment by id",
+        "description": "Only allowed by users within the assessment or admins",
+        "operationId": "getAssessment",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "assessment_id",
+            "description": "Assessment id to fetch",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "produces": [
+          "application.json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/Assessment"
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "assessment"
+        ],
+        "summary": "Update assessment by id",
+        "description": "Only allowed by assessors within the assessment or admins",
+        "operationId": "updateAssessment",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "assessment_id",
+            "description": "Assessment id to update",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Assessment data",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/AssessmentDto"
+            }
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/Assessment"
+            }
+          },
+          "404": {
+            "description": "Assessment not found"
+          },
+          "409": {
+            "description": "Assessment with this name and type already exists"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "assessment"
+        ],
+        "summary": "delete assessment by id",
+        "description": "Only allowed by assessors within the assessment or admins",
+        "operationId": "deleteAssessment",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "assessment_id",
+            "description": "assessment id to delete",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/Assessment"
+            }
+          },
+          "404": {
+            "description": "Assessment not found"
+          }
+        }
+      }
+    },
+    "/assessment/my": {
+      "get": {
+        "tags": [
+          "assessment"
+        ],
+        "summary": "Get a list of my assessments",
+        "description": "",
+        "operationId": "getMyAssessments",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Assessment"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "testingadvisor_auth": []
+          }
+        ]
+      }
+    },
+    "/template/{template_id}/maturity": {
+      "get": {
+        "tags": [
+          "maturity"
+        ],
+        "summary": "Get all maturities in assessment",
+        "description": "",
+        "operationId": "getMaturityInTemplate",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "template_id",
+            "description": "Template id to create maturity for",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "List of maturities",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Maturity"
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "maturity"
+        ],
+        "summary": "Create new maturity",
+        "description": "Only allowed by admins",
+        "operationId": "createMaturity",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "template_id",
+            "description": "Template id to create maturity for",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "description": "maturity data",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/MaturityDTO"
+            }
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Maturity with maturity_id",
+            "schema": {
+              "$ref": "#/definitions/Maturity"
+            }
+          }
+        },
+        "security": [
+          {
+            "testingadvisor_auth": []
+          }
+        ]
+      }
+    },
+    "/assessment/{assessment_id}/checkpoint": {
+      "post": {
+        "tags": [
+          "assessment"
+        ],
+        "summary": "Add filled in answer for checkpoint",
+        "description": "Only allowed by users/assessors in the assessment",
+        "operationId": "saveCheckpointAnswer",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "assessment_id",
+            "description": "assessment to save checkpoint answer for",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Save data",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/SaveCheckpoint"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Assessment not found"
+          }
+        }
+      }
+    },
+    "/assessment/{assessment_id}/score": {
+      "get": {
+        "tags": [
+          "assessment"
+        ],
+        "summary": "Get assessment score from assessment_id (all topics)",
+        "description": "Only allowed by users within the assessment",
+        "operationId": "getAssessmentScore",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "assessment_id",
+            "description": "assessment to get score for",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "List of categories and maturities with score",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Score"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "testingadvisor_auth": []
+          }
+        ]
+      }
+    },
+    "/assessment/{assessment_id}/score/{topic_id}": {
+      "get": {
+        "tags": [
+          "assessment"
+        ],
+        "summary": "Get assessment score from assessment_id for topic_id",
+        "description": "Only allowed by users within the assessment",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "assessment_id",
+            "description": "assessment to get score for",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "in": "path",
+            "name": "topic_id",
+            "description": "checkpoint topic to get score for",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "List of categories and maturities with score and topic info",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "topic_id": {
+                  "type": "integer"
+                },
+                "scores": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/Score"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "testingadvisor_auth": []
+          }
+        ]
+      }
+    },
+    "/assessment/{assessment_id}/report": {
+      "get": {
+        "tags": [
+          "assessment"
+        ],
+        "summary": "Get assessment report from id",
+        "description": "Only allowed by users within the assessment",
+        "operationId": "getAssessmentReport",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "assessment_id",
+            "description": "assessment to get report for",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "produces": [
+          "application/pdf"
+        ],
+        "responses": {
+          "200": {
+            "description": "PDF",
+            "schema": {
+              "type": "file"
+            }
+          }
+        },
+        "security": [
+          {
+            "testingadvisor_auth": []
+          }
+        ]
+      }
+    },
+    "/assessment/{assessment_id}/feedback": {
+      "get": {
+        "tags": [
+          "assessment"
+        ],
+        "summary": "Get assessment feedback from id",
+        "description": "Only allowed by users within the assessment",
+        "operationId": "getAssessmentFeedback",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "assessment_id",
+            "description": "assessment to get feedback for",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Feedback",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Feedback"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "testingadvisor_auth": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "assessment"
+        ],
+        "summary": "Add assessment feedback from id",
+        "description": "Only allowed by assessors within the assessment",
+        "operationId": "addAssessmentFeedback",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "assessment_id",
+            "description": "assessment to get feedback for",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Feedback to add",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "feedback_text": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Assessment not found"
+          }
+        },
+        "security": [
+          {
+            "testingadvisor_auth": []
+          }
+        ]
+      }
+    },
+    "/maturity/{maturity_id}": {
+      "get": {
+        "tags": [
+          "maturity"
+        ],
+        "summary": "Get maturity from id",
+        "description": "",
+        "operationId": "getMaturity",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "maturity_id",
+            "description": "maturity id to fetch",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Maturity with maturity_id",
+            "schema": {
+              "$ref": "#/definitions/Maturity"
+            }
+          },
+          "404": {
+            "description": "Maturity not found"
+          }
+        },
+        "security": [
+          {
+            "testingadvisor_auth": []
+          }
+        ]
+      },
+      "patch": {
+        "tags": [
+          "maturity"
+        ],
+        "summary": "Update maturity from id",
+        "description": "Only allowed by Admins",
+        "operationId": "updateMaturity",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "maturity_id",
+            "description": "maturity_id to update",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "in": "body",
+            "name": "maturity",
+            "description": "maturity data to update",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/MaturityDTO"
+            }
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Maturity updated"
+          },
+          "404": {
+            "description": "Maturity not found"
+          }
+        },
+        "security": [
+          {
+            "testingadvisor_auth": []
+          }
+        ]
+      }
+    },
+    "/category/{category_id}/subarea": {
+      "get": {
+        "tags": [
+          "subarea"
+        ],
+        "summary": "Get all subareas in category",
+        "description": "Only for assessor and admin",
+        "operationId": "getSubareasInCategory",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "category_id",
+            "description": "category_id to create subarea in",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "List of Subareas",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Subarea"
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "subarea"
+        ],
+        "summary": "Create new subarea",
+        "description": "Only allowed by admins",
+        "operationId": "createSubarea",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "category_id",
+            "description": "category_id to create subarea in",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "description": "subarea data",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/SubareaDTO"
+            }
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {
+            "testingadvisor_auth": []
+          }
+        ]
+      }
+    },
+    "/subarea/{subarea_id}": {
+      "get": {
+        "tags": [
+          "subarea"
+        ],
+        "summary": "Get subarea from id",
+        "description": "",
+        "operationId": "getSubArea",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "subarea_id",
+            "description": "subarea id to fetch",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Subarea",
+            "schema": {
+              "$ref": "#/definitions/Subarea"
+            }
+          },
+          "404": {
+            "description": "Subarea not found"
+          }
+        },
+        "security": [
+          {
+            "testingadvisor_auth": []
+          }
+        ]
+      },
+      "patch": {
+        "tags": [
+          "subarea"
+        ],
+        "summary": "Update subarea",
+        "description": "",
+        "operationId": "updateSubarea",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "subarea_id",
+            "description": "subarea id to update",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "in": "body",
+            "name": "Subarea",
+            "description": "Subarea data to update",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/SubareaDTO"
+            }
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Subarea",
+            "schema": {
+              "$ref": "#/definitions/Subarea"
+            }
+          },
+          "404": {
+            "description": "Subarea not found"
+          }
+        },
+        "security": [
+          {
+            "testingadvisor_auth": []
+          }
+        ]
+      }
+    },
+    "/template/{template_id}/category": {
+      "get": {
+        "tags": [
+          "category"
+        ],
+        "summary": "Get all categories in template",
+        "description": "",
+        "operationId": "getCategoriesInTemplate",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "template_id",
+            "description": "Template id to create category in",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "List of categories",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Category"
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "category"
+        ],
+        "summary": "Create new category",
+        "description": "Only allowed by admins",
+        "operationId": "createCategory",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "template_id",
+            "description": "Template id to create category in",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Category data",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CategoryDTO"
+            }
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {
+            "testingadvisor_auth": []
+          }
+        ]
+      }
+    },
+    "/category/{category_id}": {
+      "get": {
+        "tags": [
+          "category"
+        ],
+        "summary": "Get category from id",
+        "description": "",
+        "operationId": "getCategory",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "category_id",
+            "description": "category id to fetch",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Category",
+            "schema": {
+              "$ref": "#/definitions/Category"
+            }
+          },
+          "404": {
+            "description": "Category not found"
+          }
+        },
+        "security": [
+          {
+            "testingadvisor_auth": []
+          }
+        ]
+      },
+      "patch": {
+        "tags": [
+          "category"
+        ],
+        "summary": "Update category",
+        "description": "Only allowed by admins",
+        "operationId": "updateCategory",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "category_id",
+            "description": "category id to update",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "in": "body",
+            "name": "Category",
+            "description": "Category data to update",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CategoryDTO"
+            }
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Category",
+            "schema": {
+              "$ref": "#/definitions/Category"
+            }
+          },
+          "404": {
+            "description": "Category not found"
+          }
+        },
+        "security": [
+          {
+            "testingadvisor_auth": []
+          }
+        ]
+      }
+    },
+    "/template": {
+      "get": {
+        "tags": [
+          "template"
+        ],
+        "summary": "Get all templates",
+        "description": "",
+        "operationId": "getAllTemplates",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Template"
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "template"
+        ],
+        "summary": "Create new template",
+        "description": "Only allowed by admins",
+        "operationId": "createTemplate",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Template name and type",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateTemplateDTO"
+            }
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/Template"
+            }
+          },
+          "400": {
+            "description": "Bad body"
+          },
+          "404": {
+            "description": "Template not found"
+          },
+          "409": {
+            "description": "Template with this name and type already exists"
+          }
+        },
+        "security": [
+          {
+            "testingadvisor_auth": []
+          }
+        ]
+      }
+    },
+    "/template/{template_id}": {
+      "get": {
+        "tags": [
+          "template"
+        ],
+        "summary": "Get template from id",
+        "description": "Only allowed by admins",
+        "operationId": "getTemplate",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "template_id",
+            "description": "Template id to fetch",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/Template"
+            }
+          },
+          "404": {
+            "description": "Template not found"
+          }
+        },
+        "security": [
+          {
+            "testingadvisor_auth": []
+          }
+        ]
+      },
+      "patch": {
+        "tags": [
+          "template"
+        ],
+        "summary": "update template from id",
+        "description": "Only allowed by admins",
+        "operationId": "updateTemplate",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "template_id",
+            "description": "Template id to update",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/TemplateUpdateDto"
+            }
+          },
+          "400": {
+            "description": "Bad body"
+          },
+          "404": {
+            "description": "Template not found"
+          },
+          "409": {
+            "description": "Template with this name and type already exists"
+          }
+        },
+        "security": [
+          {
+            "testingadvisor_auth": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "template"
+        ],
+        "summary": "Delete template from id",
+        "description": "Only allowed by admins",
+        "operationId": "deleteTemplate",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "template_id",
+            "description": "template id to delete",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/Template"
+            }
+          },
+          "404": {
+            "description": "Template not found"
+          }
+        }
+      }
+    },
+    "/template/{template_id}/clone": {
+      "get": {
+        "tags": [
+          "template"
+        ],
+        "summary": "clone template from id",
+        "description": "Only allowed by admins",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "template_id",
+            "description": "template id to copy",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Template not found"
+          }
+        }
+      }
+    },
+    "/template/{template_id}/answers": {
+      "get": {
+        "tags": [
+          "answer"
+        ],
+        "summary": "Get possible answers from template id",
+        "description": "",
+        "operationId": "getPossibleAnswers",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "template_id",
+            "description": "Template id to fetch",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Answer"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "testingadvisor_auth": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "answer"
+        ],
+        "summary": "Add new possible answer",
+        "description": "Only allowed by admins",
+        "operationId": "addPossibleAnswer",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "template_id",
+            "description": "Template id to add answer to",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Answer data",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/AnswerDTO"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/Answer"
+            }
+          },
+          "404": {
+            "description": "Template not found"
+          }
+        }
+      }
+    }
+  },
+  "securityDefinitions": {
+    "testingadvisor_auth": {
+      "type": "basic"
+    }
+  },
+  "definitions": {
+    "CreatedUser": {
+      "type": "object",
+      "properties": {
+        "username": {
+          "type": "string"
+        },
+        "login_token": {
+          "type": "string"
+        },
+        "role": {
+          "type": "string"
+        }
+      }
+    },
+    "User": {
+      "type": "object",
+      "properties": {
+        "username": {
+          "type": "string"
+        },
+        "role": {
+          "type": "string"
+        }
+      }
+    },
+    "UserProgress": {
+      "type": "object",
+      "properties": {
+        "placeholder": {
+          "type": "string"
+        }
+      }
+    },
+    "Notifications": {
+      "type": "object",
+      "properties": {
+        "timestamp": {
+          "type": "integer"
+        },
+        "message": {
+          "type": "string"
+        }
+      }
+    },
+    "TeamDTO": {
+      "type": "object",
+      "properties": {
+        "teamName": {
+          "type": "string"
+        }
+      }
+    },
+    "UserTeam": {
+      "type": "object",
+      "properties": {
+        "team_id": {
+          "type": "integer"
+        },
+        "team_name": {
+          "type": "string"
+        },
+        "team_country": {
+          "type": "string"
+        },
+        "team_department": {
+          "type": "string"
+        }
+      }
+    },
+    "Team": {
+      "type": "object",
+      "properties": {
+        "team_id": {
+          "type": "integer"
+        },
+        "team_name": {
+          "type": "string"
+        },
+        "invite_token": {
+          "type": "string"
+        },
+        "team_country": {
+          "type": "string"
+        },
+        "team_department": {
+          "type": "string"
+        }
+      }
+    },
+    "CheckpointDTO": {
+      "type": "object",
+      "properties": {
+        "checkpoint_name": {
+          "type": "string"
+        },
+        "checkpoint_description": {
+          "type": "string"
+        },
+        "maturity_id": {
+          "type": "integer"
+        }
+      }
+    },
+    "Checkpoint": {
+      "type": "object",
+      "properties": {
+        "checkpoint_id": {
+          "type": "integer"
+        },
+        "checkpoint_name": {
+          "type": "string"
+        },
+        "checkpoint_description": {
+          "type": "string"
+        },
+        "maturity_id": {
+          "type": "integer"
+        },
+        "category_id": {
+          "type": "integer"
+        }
+      }
+    },
+    "MaturityDTO": {
+      "type": "object",
+      "properties": {
+        "maturityName": {
+          "type": "string"
+        },
+        "maturity_order": {
+          "type": "integer"
+        }
+      }
+    },
+    "Maturity": {
+      "type": "object",
+      "properties": {
+        "maturity_id": {
+          "type": "integer"
+        },
+        "maturityName": {
+          "type": "string"
+        },
+        "maturity_order": {
+          "type": "integer"
+        },
+        "template_id": {
+          "type": "integer"
+        }
+      }
+    },
+    "Login": {
+      "type": "object",
+      "required": [
+        "password",
+        "username"
+      ],
+      "properties": {
+        "username": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        }
+      }
+    },
+    "SaveCheckpoint": {
+      "type": "object",
+      "properties": {
+        "checkpoint_id": {
+          "type": "integer"
+        },
+        "possible_answer_id": {
+          "type": "integer"
+        }
+      }
+    },
+    "Assessment": {
+      "type": "object",
+      "properties": {
+        "assessment_id": {
+          "type": "integer"
+        },
+        "assessment_name": {
+          "type": "string"
+        },
+        "assessment_description": {
+          "type": "string"
+        },
+        "country_name": {
+          "type": "string"
+        },
+        "department_name": {
+          "type": "string"
+        },
+        "created_at": {
+          "type": "string"
+        },
+        "updated_at": {
+          "type": "string"
+        },
+        "completed_at": {
+          "type": "string"
+        },
+        "assessment_type": {
+          "type": "string"
+        },
+        "template_id": {
+          "type": "integer"
+        }
+      }
+    },
+    "AssessmentDto": {
+      "type": "object",
+      "properties": {
+        "assessment_name": {
+          "type": "string"
+        },
+        "assessment_description": {
+          "type": "string"
+        },
+        "country_name": {
+          "type": "string"
+        },
+        "department_name": {
+          "type": "string"
+        },
+        "created_at": {
+          "type": "string"
+        },
+        "updated_at": {
+          "type": "string"
+        },
+        "completed_at": {
+          "type": "string"
+        },
+        "assessment_type": {
+          "type": "string"
+        },
+        "template_id": {
+          "type": "integer"
+        }
+      }
+    },
+    "SubareaDTO": {
+      "type": "object",
+      "properties": {
+        "subarea_name": {
+          "type": "string"
+        },
+        "subarea_summary": {
+          "type": "string"
+        },
+        "subarea_description": {
+          "type": "string"
+        }
+      }
+    },
+    "Subarea": {
+      "type": "object",
+      "properties": {
+        "subarea_id": {
+          "type": "integer"
+        },
+        "subarea_name": {
+          "type": "string"
+        },
+        "subarea_summary": {
+          "type": "string"
+        },
+        "subarea_description": {
+          "type": "string"
+        },
+        "category_id": {
+          "type": "integer"
+        }
+      }
+    },
+    "CategoryDTO": {
+      "type": "object",
+      "properties": {
+        "template_id": {
+          "type": "integer"
+        },
+        "category_data": {
+          "$ref": "#/definitions/Category"
+        }
+      }
+    },
+    "Category": {
+      "type": "object",
+      "properties": {
+        "category_id": {
+          "type": "integer"
+        },
+        "category_name": {
+          "type": "string"
+        },
+        "category_color": {
+          "type": "integer"
+        }
+      }
+    },
+    "Template": {
+      "type": "object",
+      "properties": {
+        "template_id": {
+          "type": "integer"
+        },
+        "template_name": {
+          "type": "string"
+        },
+        "template_type": {
+          "type": "string"
+        },
+        "disabled": {
+          "type": "boolean"
+        },
+        "weight_range_min": {
+          "type": "integer"
+        },
+        "weight_range_max": {
+          "type": "integer"
+        },
+        "score_formula": {
+          "type": "string"
+        },
+        "include_no_answer": {
+          "type": "boolean"
+        }
+      }
+    },
+    "TemplateUpdateDto": {
+      "type": "object",
+      "properties": {
+        "template_name": {
+          "type": "string"
+        },
+        "template_type": {
+          "type": "string"
+        },
+        "disabled": {
+          "type": "boolean"
+        },
+        "weight_range_min": {
+          "type": "integer"
+        },
+        "weight_range_max": {
+          "type": "integer"
+        },
+        "score_formula": {
+          "type": "string"
+        },
+        "include_no_answer": {
+          "type": "boolean"
+        }
+      }
+    },
+    "CreateTemplateDTO": {
+      "type": "object",
+      "properties": {
+        "template_name": {
+          "type": "string"
+        },
+        "template_type": {
+          "type": "string"
+        }
+      }
+    },
+    "Feedback": {
+      "type": "object",
+      "properties": {
+        "feedback_text": {
+          "type": "string"
+        },
+        "feedback_priority": {
+          "type": "integer"
+        },
+        "feedback_additional_information": {
+          "type": "string"
+        }
+      }
+    },
+    "Answer": {
+      "type": "object",
+      "properties": {
+        "possible_answer_id": {
+          "type": "integer"
+        },
+        "answer_text": {
+          "type": "string"
+        },
+        "answer_weight": {
+          "type": "number"
+        }
+      }
+    },
+    "AnswerDTO": {
+      "type": "object",
+      "properties": {
+        "answer_text": {
+          "type": "string"
+        },
+        "answer_weight": {
+          "type": "number"
+        }
+      }
+    },
+    "Score": {
+      "type": "object",
+      "properties": {
+        "category_id": {
+          "type": "integer"
+        },
+        "maturity_id": {
+          "type": "integer"
+        },
+        "score": {
+          "type": "integer"
+        }
+      }
+    }
+  }
+}

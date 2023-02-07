@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "Category" ALTER COLUMN "color" SET DEFAULT E'#FF0000',
+ALTER COLUMN "color" SET DATA TYPE TEXT;
