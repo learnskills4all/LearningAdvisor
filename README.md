@@ -48,6 +48,21 @@ $ docker-compose up
 
 This will start a version of the backend that can be visited on [http://localhost:5000](http://localhost:5000) and a pgAdmin instance to interact with the database on [http://localhost:5050](http://localhost:5050).
 
+If this is the first time you run the application locally, you must setup the server as well from the pgAdmin. Here is how:
+1. Visit http://localhost:5050 to access pgAdmin.
+2. Set your master password if not already done so and log in.
+3. Click 'Create Server'.
+4. Under the 'General' tab add your server's name (arbitrary, can be anything).
+5. Under the 'Connection' tab make sure:
+  - Host name is 'postgres'
+  - Port is '5432'
+  - Maintenance database is 'postgres'
+  - Username is 'abc'
+  - Password is 'abc'
+6. Save your server.
+
+After the server is setup you can connect to it on the left under the 'Servers' section.
+
 ### Production deployment
 
 The setup for production is a little different. The frontend now needs to be build to a static file folder instead of deployed on a development server. To do this run the following commands (Use the first block on linux and the second block on windows)
